@@ -1,0 +1,55 @@
+package frc.robot.commands;
+
+import edu.wpi.first.wpilibj2.command.Command;
+import frc.robot.RobotContainer;
+import frc.robot.subsystems.ArmSubsystem;
+import frc.robot.subsystems.ArmSubsystem.ArmState;
+import frc.robot.subsystems.ElevatorSubsystem;
+import frc.robot.subsystems.ElevatorSubsystem.ElevatorState;
+import frc.robot.subsystems.EndEffectorSubsystem;
+import frc.robot.subsystems.EndEffectorSubsystem.EndEffectorState;
+
+public class Algae2Command extends Command {
+  ElevatorSubsystem elevatorSubsystem;
+  ArmSubsystem armSubsystem;
+  EndEffectorSubsystem endEffectorSubsystem;
+  EndEffectorState state = EndEffectorState.IntakeAlgaeFloor;
+
+  public Algae2Command() {
+    this.elevatorSubsystem = RobotContainer.elevatorSubsystem;
+    this.armSubsystem = RobotContainer.armSubsystem;
+    this.endEffectorSubsystem = RobotContainer.endEffectorSubsystem;
+
+    addRequirements(elevatorSubsystem);
+    addRequirements(armSubsystem);
+    addRequirements(endEffectorSubsystem);
+  }
+
+  // Called when the command is initially scheduled.
+  @Override
+  public void initialize() {
+    if (endEffectorSubsystem.getState() == EndEffectorState.IntakeAlgaeFloor) {
+      state = EndEffectorState.IntakeHoldAlgae;
+    }
+  }
+
+  // Called every time the scheduler runs while the command is scheduled.
+  @Override
+  public void execute() {
+    elevatorSubsystem.setDesiredState(ElevatorState.AlgaeL2);
+    armSubsystem.setDesiredState(ArmState.AlgaeL2);
+    // endEffectorSubsystem.setDesiredState(EndEffectorState.IntakeAlgaeFloor);
+    endEffectorSubsystem.setDesiredState(state);
+  }
+
+  // Called once the command ends or is interrupted.
+  @Override
+  public void end(boolean interrupted) {
+  }
+
+  // Returns true when the command should end.
+  @Override
+  public boolean isFinished() {
+    return true;
+  }
+}
