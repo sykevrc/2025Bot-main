@@ -1,17 +1,21 @@
 // Copyright (c) FIRST and other WPILib contributors.
 // Open Source Software; you can modify and/or share it under the terms of
 // the WPILib BSD license file in the root directory of this project.
-package main.java.frc.robot.commands;
+package frc.robot.commands;
 
 import edu.wpi.first.wpilibj2.command.SequentialCommandGroup;
+
+import com.studica.frc.AHRS;
+import com.studica.frc.AHRS.NavXComType;
+
 import edu.wpi.first.wpilibj2.command.Command;
 import frc.robot.RobotContainer;
 import frc.robot.subsystems.DriveSubsystem;
 
 public class DriveDistance extends Command {
-  private final DriveSubsystem m_drive;
-  private final double m_distance;
-  private final double m_speed;
+  private DriveSubsystem driveSubsystem;
+  private boolean finished = false;
+	private final AHRS gyro = new AHRS(NavXComType.kMXP_SPI);
 
   /**
    * Creates a new DriveDistance.
@@ -20,31 +24,31 @@ public class DriveDistance extends Command {
    * @param speed The speed at which the robot will drive
    * @param drive The drive subsystem on which this command will run
    */
-  public DriveDistance(double inches, double speed, DriveSubsystem drive) {
-    m_distance = inches;
-    m_speed = speed;
-    m_drive = drive;
-    addRequirements(m_drive);
+  public DriveDistance() {
+    addRequirements(driveSubsystem);
   }
 
   @Override
   public void initialize() {
-    m_drive.resetEncoders();
-    m_drive.arcadeDrive(m_speed, 0);
+    finished = false;
+    driveSubsystem.resetEncoders();
+    driveSubsystem.driveRobotRelative(0.0, 0.0, 0.0);
   }
 
   @Override
   public void execute() {
-    m_drive.arcadeDrive(m_speed, 0);
+    while(gyro.getWorldLinearAccelX() < 0.05){
+    driveSubsystem.driveRobotRelative(0.1, 0.0, 0.0);
+    
+    }
   }
 
   @Override
   public void end(boolean interrupted) {
-    m_drive.arcadeDrive(0, 0);
   }
 
   @Override
   public boolean isFinished() {
-    return Math.abs(m_drive.getAverageEncoderDistance()) >= m_distance;
+    return finished;
   }
 }

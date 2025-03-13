@@ -44,11 +44,8 @@ import frc.robot.commands.IntakeNoWait;
 import frc.robot.commands.ResetElevatorEncoder;
 import frc.robot.commands.FailsafeCoralCommand;
 import frc.robot.commands.ResetPositionCommand;
-import frc.robot.commands.autonomous.AutoAlignLeftAutoCommand;
-import frc.robot.commands.autonomous.AutoAlignRightAutoCommand;
-import frc.robot.commands.autonomous.DelayCommand;
-import frc.robot.commands.autonomous.EjectCoralCommand;
-import frc.robot.commands.autonomous.IntakeCoralWaitCommand;
+import frc.robot.commands.ComplexAuto;
+
 import frc.robot.subsystems.ArmSubsystem;
 import frc.robot.subsystems.DriveSubsystem;
 import frc.robot.subsystems.EndEffectorSubsystem;
@@ -72,8 +69,8 @@ public class RobotContainer {
 
 	private final CommandXboxController driverController = new CommandXboxController(0);
 	private final CommandXboxController operatorController = new CommandXboxController(1);
-	private final Command m_simpleAuto = new DriveDistance(
-			AutoConstants.kAutoDriveDistanceInches, AutoConstants.kAutoDriveSpeed, m_robotDrive);
+	// private final Command m_simpleAuto = new DriveDistance(
+	// 		AutoConstants.kAutoDriveDistanceInches, AutoConstants.kAutoDriveSpeed, m_robotDrive);
 
 	// A complex auto routine that drives forward, drops a hatch, and then drives
 	// backward.
@@ -89,8 +86,7 @@ public class RobotContainer {
 
 		// Configure the trigger bindings
 		configureBindings();
-		m_chooser.setDefaultOption("Simple Auto", m_simpleAuto);
-		m_chooser.addOption("Complex Auto", m_complexAuto);
+		m_chooser.addOption("9 Points", m_complexAuto);
 	
 		// Put the chooser on the dashboard
 		Shuffleboard.getTab("Autonomous").add(m_chooser);
@@ -226,6 +222,6 @@ public class RobotContainer {
 	}
 
 	public Command getAutonomousCommand() {
-		return autoChooser.getSelected();
+		return m_chooser.getSelected();
 	}
 }
